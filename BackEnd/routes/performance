@@ -1,0 +1,84 @@
+var express = require('express');
+const knex = require('knex');
+const knexConfig = require('../knexfile.js');
+const pool = knex(knexConfig);
+var router = express.Router();
+//Get performance review of a certain employee
+/*router.get('/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  pool.select('*').from('performance').where("to_employee", id).then((data) => {
+    res.status(200).json(data);
+  }).catch((err) => {
+    res.status(500).end();
+  });
+});*/
+//Get performance reviews given by a certain employee
+router.get('/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    pool.select('*').from('performance').where("from_employee", id).then((data) => {
+      res.status(200).json({"list": data});
+    }).catch((err) => {
+      res.status(500).end();
+    });
+  });
+
+  //Get ALL performance reviews 
+router.get('/', (req, res) => {
+  pool.select('*').from('performance').then((data) => {
+    res.status(200).json({"list": data});
+  }).catch((err) => {
+    res.status(500).end();
+  });
+});
+// router.get('/:id', (req, res) => {
+//     const id = parseInt(req.params.id);
+//     pool.select('*').from('performance').where("id", id).then((data) => {
+//       res.status(200).json(data);
+//     }).catch((err) => {
+//       res.status(500).end();
+//     });
+//   });
+//Post a  entry of a paid time request through the req.body
+router.post('/', (req, res) => {
+  pool.select('*').from('performance').then((data) => {
+          let max = 0;
+          let performance_data = data;
+          for (let i = 0; i < performance_data.length; i++) {
+              if (performance_data[i].id > max) {
+                  max = performance_data[i].id;
+              }
+          }
+          return max;
+      })
+      .then(id => {
+          id++;
+          let attributes = req.body;
+          attributes.id = id
+          pool.insert(attributes).into('performance')
+              .then(() => {
+                  res.send(attributes);
+              })
+              .catch(() => {
+                  res.status(500).end();
+              });
+      })
+      .catch((err) => {
+          res.status(500).end();
+      });
+  res.status(200).end();
+});
+//Delete performance request based on ID
+//Ex. sending a delete request at URL
+router.delete('/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  //console.log(id)
+  pool("performance").where("id", id).del().then(function (count) {
+    res.send("successfully deleted");
+    res.status(200).end();
+  }).catch((err) => {
+    // Send a 500 (internal server error) if something goes wrong (rejected promises are not caught by express).
+    res.send("del error");
+    res.status(500).end();
+  })
+});
+module.exports = router;

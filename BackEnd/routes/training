@@ -1,0 +1,74 @@
+
+var express = require('express');
+const knex = require('knex');
+const knexConfig = require('../knexfile.js');
+const pool = knex(knexConfig);
+
+var router = express.Router();
+
+//Get incompleted trainings  requests based for that employee ID
+router.get('/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  pool.select('*').from('training').where("emp_id", id).andWhere("completed",0).then((data) => {
+    res.status(200).json(data);
+  }).catch((err) => {
+    res.status(500).end();
+  });
+});
+//Get completed training requests based for that employee ID
+router.get('/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    pool.select('*').from('training').where("emp_id", id).andWhere("completed",1).then((data) => {
+      res.status(200).json(data);
+    }).catch((err) => {
+      res.status(500).end();
+    });
+  });
+//Get all training requests based for that employee
+
+router.get('/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    pool.select('*').from('training').where("emp_id", id).then((data) => {
+      res.status(200).json(data);
+    }).catch((err) => {
+      res.status(500).end();
+    });
+  });
+
+
+
+//Post a  entry of a training request through the req.body from a manager
+router.post('/:id', (req, res) => {
+const id = parseInt(req.params.id);
+  const attributes = req.body;
+  pool.insert(attributes).into('training').where("manager_id",id).then(() => {
+    res.send("successfully added");
+    res.status(200).end();
+  }).catch((err) => {
+    // Send a 500 (internal server error) if something goes wrong (rejected promises are not caught by express).
+    res.send("post error");
+    res.status(500).end();
+
+  })
+});
+
+
+//Delete pto request based on ID 
+//Ex. sending a delete request at URL localhost:3000/employee/123 would delete the user with ID 123
+router.delete('/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  //console.log(id)
+  pool("training").where("id", id).del().then(function (count) {
+    res.send("successfully deleted");
+    res.status(200).end();
+  }).catch((err) => {
+    // Send a 500 (internal server error) if something goes wrong (rejected promises are not caught by express).
+    res.send("del error");
+    res.status(500).end();
+  })
+});
+
+
+
+
+module.exports = router;

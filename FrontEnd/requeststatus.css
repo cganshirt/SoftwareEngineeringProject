@@ -1,0 +1,154 @@
+body {
+  background-color: white;
+  overflow: auto;
+}
+
+h1 {
+  color: black;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 27px;
+  margin-top: 100px;
+}
+
+h2 {
+  font-size: 20px;
+  font-family: "Times New Roman", Times, serif;
+  color: white;
+  margin-left: 10px;
+  margin-top: 8px;
+}
+
+.BigBox {
+  margin-top: 100px;
+  /* margin-left: 40%; */
+  /* width: 60%; */
+}
+
+.TitleBox {
+  margin-left: 50px;
+}
+
+.PEtitlebox {
+  border: 1.5px solid black;
+  background-color: #005151;
+  height: 40px;
+}
+
+.PTOtitlebox {
+  height: 40px;
+  border: 1.5px solid black;
+  background-color: #005151;
+}
+
+.PElist {
+  border: 1px solid #dedede;
+  background-color: #dedede;
+  height: 170px;
+}
+
+.PTOlist {
+  border: 1px solid #dedede;
+  background-color: #dedede;
+  height: 170px;
+}
+
+.PTOitem {
+  border: 1px solid #efeeee;
+  background-color: #efeeee;
+  height: 110px;
+  width: 95%;
+  margin-left: 2.5%;
+  margin-right: 2.5%;
+  overflow: scroll;
+}
+
+.PEitem {
+  border: 1px solid #efeeee;
+  background-color: #efeeee;
+  height: 110px;
+  width: 95%;
+  margin-left: 2.5%;
+  margin-right: 2.5%;
+  overflow: scroll;
+}
+
+.alignleft {
+  float: left;
+  color: black;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 16px;
+  margin-left: 7%;
+}
+
+.alignright {
+  float: right;
+  color: black;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 16px;
+  margin-right: 17%;
+}
+
+.scroll-area-sm {
+  height: 200px;
+  /* overflow-x: hidden */
+}
+
+.list-group-item {
+  display: block;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: -1px;
+  background-color: #efeeee;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.list-group {
+  display: flex;
+  flex-direction: column;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.widget-content {
+  padding: 1rem;
+  flex-direction: row;
+  align-items: center;
+}
+
+.widget-content .widget-content-wrapper {
+  display: flex;
+  flex: 1;
+  align-items: center;
+}
+
+.widget-content .widget-content-right {
+  text-align: center;
+  font-family: "Times New Roman", Times, serif;
+  background-color: red;
+  height: 25px;
+  width: 90px;
+  border-radius: 10px;
+  padding: auto;
+  margin-left: auto;
+}
+
+.approve .widget-content .widget-content-right {
+  text-align: center;
+  font-family: "Times New Roman", Times, serif;
+  background-color: rgb(19, 197, 19);
+  height: 25px;
+  width: 90px;
+  border-radius: 10px;
+  padding: auto;
+  margin-left: auto;
+}
+
+.in-progress .widget-content .widget-content-right {
+  text-align: center;
+  font-family: "Times New Roman", Times, serif;
+  background-color: rgb(232, 243, 27);
+  height: 25px;
+  width: 90px;
+  border-radius: 10px;
+  padding: auto;
+  margin-left: auto;
+}

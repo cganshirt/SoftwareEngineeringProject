@@ -1,0 +1,147 @@
+var express = require('express');
+const knex = require('knex');
+const knexConfig = require('../knexfile.js');
+const pool = knex(knexConfig);
+var router = express.Router();
+//Get incompleted trainings  requests based for that employee ID
+/*router.get('/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  pool.select('*').from('training').where("emp_id", id).andWhere("completed",0).then((data) => {
+    res.status(200).json(data);
+  }).catch((err) => {
+    res.status(500).end();
+  });
+});*/
+//Get completed training requests based for that employee ID
+/*router.get('/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    pool.select('*').from('training').where("emp_id", id).andWhere("completed",1).then((data) => {
+      res.status(200).json(data);
+    }).catch((err) => {
+      res.status(500).end();
+    });
+  });*/
+//Get all training requests based for that employee
+router.get('/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    pool.select('*').from('training').where("emp_id", id).then((data) => {
+      res.status(200).json({"list": data});
+    }).catch((err) => {
+      res.status(500).end();
+    });
+  });
+
+//Get all training requests no matter the employee
+router.get('/', (req, res) => {
+  const id = parseInt(req.params.id);
+  pool.select('*').from('training').then((data) => {
+    res.status(200).json({"list": data});
+  }).catch((err) => {
+    res.status(500).end();
+  });
+});
+
+//Post a  entry of a training request through the req.body from a manager
+router.post('/', (req, res) => {
+      pool.select('*').from('training').then((data) => {
+        let max = 0;
+        let training_data = data;
+        for (let i = 0; i < training_data.length; i++){
+          if (training_data[i].id > max){
+            max=training_data[i].id;
+          }
+        }
+        return max;
+      })
+      .then( id => {
+        id++;
+        const employees = req.body.emp_ids;
+        let attributes = req.body.attributes;
+        
+        let entries = [];
+        for (let i = 0; i < employees.length; i++){
+          entry = {};
+          entry.manager_id= attributes.manager_id;
+          entry.training_link= attributes.training_link;
+          entry.additional_info= attributes.additional_info;
+          entry.start_date= attributes.start_date;
+          entry.end_date= attributes.end_date;
+          entry.id = id+i;
+          entry.emp_id = employees[i];
+          entry.completed = 0;
+          entries.push(entry);
+        }
+        //console.log(entries);
+        pool.insert(entries).into('training')
+          .then(() => { 
+            res.send(entries); 
+          })
+          .catch(() => { 
+            res.status(500).end();
+          });
+        }
+      )
+      .catch((err) => {
+        res.status(500).end();
+      });
+      res.status(200).end();
+    
+  });
+
+//Post a  entry of a training request through the req.body from a manager
+router.post('/:id', (req, res) => {
+const id = parseInt(req.params.id);
+  const attributes = req.body;
+  pool.insert(attributes).into('training').where("manager_id",id).then(() => {
+    res.send("successfully added");
+    res.status(200).end();
+  }).catch((err) => {
+    // Send a 500 (internal server error) if something goes wrong (rejected promises are not caught by express).
+    res.send("post error");
+    res.status(500).end();
+  })
+});
+
+
+//Update training
+//Updated json with new attributes of training is passed in through req.body
+//New json can contain any number of attributes (any attributes not present will stay what they were before)
+//HOWEVER, the json must contain an ID or the system will return an error
+//Ex. sending a PUT request at URL localhost:3000/assignedtraining
+//with a req.body of     
+    // {
+    //     "id": 5,
+    //     "emp_id": 1,
+    //     "completed": 1
+    // }
+//would update completed of the training with ID 5 to 1 (given that the other attributes were the same as before - emp_id, etc)
+router.put('/', (req, res) => {
+  //console.log(req.body);
+  const id = req.body.id;
+  //console.log("ID " + id);
+  pool("training").where("id", id).update(req.body).then(function (count) {
+    //console.log(count);
+    res.send("successfully put");
+    res.status(200).end();
+  }).catch((err) => {
+    // Send a 500 (internal server error) if something goes wrong (rejected promises are not caught by express).
+    res.send("put error");
+    res.status(500).end();
+  })
+});
+
+//Delete training based on ID
+//Ex. sending a delete request at URL localhost:3000/employee/123 would delete the user with ID 123
+router.delete('/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  //console.log(id)
+  pool("training").where("id", id).del().then(function (count) {
+    res.send("successfully deleted");
+    res.status(200).end();
+  }).catch((err) => {
+    // Send a 500 (internal server error) if something goes wrong (rejected promises are not caught by express).
+    res.send("del error");
+    res.status(500).end();
+  })
+});
+module.exports = router;

@@ -1,0 +1,30 @@
+const express = require('express')
+const path = require('path')
+const bodyParser = require('body-parser')
+const bcrypt = require('bcryptjs')
+const knex = require('knex');
+const knexConfig = require('../knexfile.js');
+const { response } = require('express');
+const pool = knex(knexConfig);
+var router = express.Router();
+
+router.post('/user', (req, res) => {
+	const username = req.body.email
+	const password = req.body.password
+	pool.select('*').from("employees").where("email", username).then((data) =>{
+		if(!data){
+			res.json({ status: 'not valid'})
+		}
+	    bcrypt.compare(password, data[0].password, (err, resp) => {
+			if(resp) {
+				return res.status(200).json({"list": (data)})
+			} else {
+				return res.status(202).json({status: 'invalid credentials'})
+			}
+		})
+	}).catch((err) => {
+    // Send a 500 (internal server error) if something goes wrong (rejected promises are not caught by express).
+    res.status(500).end();
+  });
+});
+module.exports = router;

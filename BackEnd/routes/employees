@@ -1,0 +1,86 @@
+//not sure if this is the correct place for these
+var express = require('express');
+const knex = require('knex');
+const knexConfig = require('../knexfile.js');
+const pool = knex(knexConfig);
+
+var router = express.Router();
+
+//Get employee user datta based on ID
+//Employee ID is passed in as a parameter through the URL
+//Ex. sending a get request at URL localhost:3000/employee/123 would get all datta from the user entry with ID 123
+router.get('/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  pool.select('*').from('employees').where("id", id).then((data) => {
+    res.status(200).json({"list": (data)});
+  }).catch((err) => {
+    // Send a 500 (internal server error) if something goes wrong (rejected promises are not caught by express).
+    res.status(500).end();
+  });
+});
+
+//Get all employee data
+// router.get('/', (req, res) => {
+//   pool.select('*').from('employees').then((data) => {
+//     res.status(200).json(data);
+//   }).catch((err) => {
+//     // Send a 500 (internal server error) if something goes wrong (rejected promises are not caught by express).
+//     res.status(500).end();
+//   });
+// });
+
+//Post a json entry of a new user through the req.body
+router.post('/', (req, res) => {
+  const attributes = req.body;
+  pool.insert(attributes).into('employees').then(() => {
+    res.send("successfully added");
+    res.status(200).end();
+  }).catch((err) => {
+    // Send a 500 (internal server error) if something goes wrong (rejected promises are not caught by express).
+    res.send("post error");
+    res.status(500).end();
+
+  })
+});
+
+//Delete employee user based on ID
+//Employee ID is passed in as a parameter through the URL
+//Ex. sending a delete request at URL localhost:3000/employee/123 would delete the user with ID 123
+router.delete('/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  //console.log(id)
+  pool("employees").where("id", id).del().then(function (count) {
+    //console.log(count);
+    res.send("successfully deleted");
+    res.status(200).end();
+  }).catch((err) => {
+    // Send a 500 (internal server error) if something goes wrong (rejected promises are not caught by express).
+    res.send("del error");
+    res.status(500).end();
+  })
+});
+
+//Update employee user based on ID
+//Employee ID is passed in as a parameter through the URL
+//New updated entry is passed as a JSON in req.body
+//Ex. sending a PUT request at URL localhost:3000/employee/123 
+//with a req.body of {'firstname' = "Bob"} 
+//would update the firstname of the user with ID 123 to "Bob"
+router.put('/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  //console.log(req.body);
+  //const id = parseInt(req.params.id);
+  //console.log(id);
+  pool("employees").where("id", id).update(req.body).then(function (count) {
+    //console.log(count);
+    res.send("successfully deleted");
+    res.status(200).end();
+  }).catch((err) => {
+    // Send a 500 (internal server error) if something goes wrong (rejected promises are not caught by express).
+    res.send("del error");
+    res.status(500).end();
+  })
+});
+
+
+module.exports = router;

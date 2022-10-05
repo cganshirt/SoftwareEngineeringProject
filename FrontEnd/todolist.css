@@ -1,0 +1,164 @@
+body {
+  background-color: white;
+  overflow: auto;
+}
+
+h1 {
+  color: black;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 27px;
+  margin-top: 100px;
+}
+
+h2 {
+  font-size: 20px;
+  font-family: "Times New Roman", Times, serif;
+  color: white;
+  margin-left: 10px;
+  margin-top: 8px;
+}
+
+.BigBox {
+  margin-top: 100px;
+}
+
+.TitleBox {
+  margin-left: 50px;
+}
+
+.IPtitlebox {
+  border: 1.5px solid black;
+  background-color: #005151;
+  height: 40px;
+}
+
+.Ctitlebox {
+  height: 40px;
+  border: 1.5px solid black;
+  background-color: #005151;
+}
+
+.NStitlebox {
+  height: 40px;
+  border: 1.5px solid black;
+  background-color: #005151;
+}
+
+.IPlist {
+  border: 1px solid #DEDEDE;
+  background-color: #DEDEDE;
+  height: 125px;
+}
+
+.Clist {
+  border: 1px solid #DEDEDE;
+  background-color: #DEDEDE;
+  height: 125px;
+}
+
+.NSlist {
+  border: 1px solid #DEDEDE;
+  background-color: #DEDEDE;
+  height: 125px;
+}
+
+.IPitem {
+  border: 1px solid #efeeee;
+  background-color: #efeeee;
+  height: 125px;
+}
+.Citem{
+  border: 1px solid #efeeee;
+  background-color: #efeeee;
+  height: 125px;
+}
+.NSitem{
+  border: 1px solid #efeeee;
+  background-color: #efeeee;
+  height: 125px;
+}
+
+/* .alignleft {
+float: left;
+  color:black;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 16px;
+  margin-left: 30px;
+}
+.alignright {
+float: right;
+  color:black;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 16px;
+  margin-right: 75px;
+} */
+
+.scroll-area-sm {
+  height: 125px;
+  overflow-x: hidden
+}
+
+.list-group-item-IP {
+  display: block;
+  height: 35px;
+  background-color: #fff2cc;
+  border: 1px solid rgba(0, 0, 0, 0.125)
+}
+.list-group-item-NS {
+  display: block;
+  height: 35px;
+  background-color: #f4cccc;
+  border: 1px solid rgba(0, 0, 0, 0.125)
+}
+.list-group-item-C {
+  display: block;
+  height: 35px;
+  background-color: #d9ead3;
+  border: 1px solid rgba(0, 0, 0, 0.125)
+}
+
+/* 
+
+.widget-content {
+  padding: 1rem;
+  flex-direction: row;
+  align-items: center
+}
+
+.widget-content .widget-content-wrapper {
+  display: flex;
+  flex: 1;
+  position: relative;
+  align-items: center
+}
+
+.widget-content .widget-content-right {
+  text-align: center;
+  font-family: 'Times New Roman', Times, serif;
+  background-color: red;
+  height: 25px;
+  width: 90px;
+  border-radius: 10px;
+  padding: auto;
+  margin-left: auto
+}
+.approve .widget-content .widget-content-right{
+  text-align: center;
+  font-family: 'Times New Roman', Times, serif;
+  background-color: rgb(19, 197, 19);
+  height: 25px;
+  width: 90px;
+  border-radius: 10px;
+  padding: auto;
+  margin-left: auto
+}
+.in-progress .widget-content .widget-content-right{
+  text-align: center;
+  font-family: 'Times New Roman', Times, serif;
+  background-color: rgb(232, 243, 27);
+  height: 25px;
+  width: 90px;
+  border-radius: 10px;
+  padding: auto;
+  margin-left: auto
+} */

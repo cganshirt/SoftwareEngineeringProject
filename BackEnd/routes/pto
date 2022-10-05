@@ -1,0 +1,158 @@
+var express = require('express');
+const knex = require('knex');
+const knexConfig = require('../knexfile.js');
+const pool = knex(knexConfig);
+var router = express.Router();
+
+//Get incompleted/unapproved paid time off requests based for that manager ID
+router.get('/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  pool.select('*').from('pto').where("manager_id", id).andWhere("approved",0).then((data) => {
+    res.status(200).json({"list": data});
+  }).catch((err) => {
+    res.status(500).end();
+  });
+});
+
+//Get all paid time off requests for all managers
+router.get('/', (req, res) => {
+  const id = parseInt(req.params.id);
+  pool.select('*').from('pto').then((data) => {
+    res.status(200).json({"list": data});
+  }).catch((err) => {
+    res.status(500).end();
+  });
+});
+
+//Get completed paid time off requests based for that manager ID
+/*router.get('/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    pool.select('*').from('pto').where("manager_id", id).andWhere("completed",1).then((data) => {
+      res.status(200).json(data);
+    }).catch((err) => {
+      res.status(500).end();
+    });
+  });*/
+//Get all paid time off requests based for that manager ID
+// router.get('/:id', (req, res) => {
+//     const id = parseInt(req.params.id);
+//     pool.select('*').from('pto').where('manager_id', id).then((data) => {
+//       res.status(200).json(data);
+//     }).catch((err) => {
+//       res.status(500).end();
+//     });
+//   });
+//Post a  entry of a paid time request through the req.body
+router.post('/', (req, res) => {
+  pool.select('*').from('pto').then((data) => {
+          let max = 0;
+          let pto_data = data;
+          for (let i = 0; i < pto_data.length; i++) {
+              if (pto_data[i].id > max) {
+                  max = pto_data[i].id;
+              }
+          }
+          return max;
+      })
+      .then(id => {
+          id++;
+          let attributes = req.body;
+          attributes.id = id
+          pool.insert(attributes).into('pto')
+              .then(() => {
+                  res.send(attributes);
+              })
+              .catch(() => {
+                  res.status(500).end();
+              });
+      })
+      .catch((err) => {
+          res.status(500).end();
+      });
+  res.status(200).end();
+});
+
+//Update PTO Request
+//Updated json with new attributes of PTO request is passed in through req.body
+//New json can contain any number of attributes (any attributes not present will stay what they were before)
+//HOWEVER, the json must contain an ID or the system will return an error
+//Ex. sending a PUT request at URL localhost:3000/pto
+//with a req.body of     
+    // {
+    //     "id": 5,
+    //     "emp_id": 1,
+    //     "manager_id": 1,
+    //     "type": "vacation",
+    //     "approved": 1
+    // }
+//would update approved of the PTO request with ID 5 to 1 (given that the other attributes were the same as before - emp_id, etc)
+router.put('/', (req, res) => {
+  //console.log(req.body);
+  const id = req.body.id;
+  //console.log("ID " + id);
+  pool("pto").where("id", id).update(req.body).then(function (count) {
+    //console.log(count);
+    res.send("successfully put");
+    res.status(200).end();
+  }).catch((err) => {
+    // Send a 500 (internal server error) if something goes wrong (rejected promises are not caught by express).
+    res.send("put error");
+    res.status(500).end();
+  })
+});
+
+//Update using id in url
+//Update PTO Request based on ID
+//PTO ID is passed in as a parameter through the URL
+//New updated entry is passed as a JSON in req.body
+//Ex. sending a PUT request at URL localhost:3000/pto/123 
+//with a req.body of {'approved' = 1} 
+//would update approved of the PTO request with ID 123 to 1
+// router.put('/:id', (req, res) => {
+//   const id = parseInt(req.params.id);
+//   pool("pto").where("id", id).update(req.body).then(function (count) {
+//     res.send("successfully put");
+//     res.status(200).end();
+//   }).catch((err) => {
+//     // Send a 500 (internal server error) if something goes wrong (rejected promises are not caught by express).
+//     res.send("put error");
+//     res.status(500).end();
+//   })
+// });
+
+
+//Delete pto request based on ID
+//Ex. sending a delete request at URL localhost:3000/employee/123 would delete the user with ID 123
+router.delete('/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  //console.log(id)
+  pool("pto").where("id", id).del().then(function (count) {
+    res.send("successfully deleted");//Update employee user based on ID
+    //Employee ID is passed in as a parameter through the URL
+    //New updated entry is passed as a JSON in req.body
+    //Ex. sending a PUT request at URL localhost:3000/employee/123 
+    //with a req.body of {'firstname' = "Bob"} 
+    //would update the firstname of the user with ID 123 to "Bob"
+    router.put('/:id', (req, res) => {
+      const id = parseInt(req.params.id);
+      //console.log(req.body);
+      //const id = parseInt(req.params.id);
+      //console.log(id);
+      pool("employees").where("id", id).update(req.body).then(function (count) {
+        //console.log(count);
+        res.send("successfully deleted");
+        res.status(200).end();
+      }).catch((err) => {
+        // Send a 500 (internal server error) if something goes wrong (rejected promises are not caught by express).
+        res.send("del error");
+        res.status(500).end();
+      })
+    });
+    res.status(200).end();
+  }).catch((err) => {
+    // Send a 500 (internal server error) if something goes wrong (rejected promises are not caught by express).
+    res.send("del error");
+    res.status(500).end();
+  })
+});
+module.exports = router;
